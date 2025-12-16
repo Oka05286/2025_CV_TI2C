@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Perbandingan Model Deteksi</title>
+    <style>
+        body {
+            background: #0f172a;
+            color: #e5e7eb;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        h2 {
+            padding: 20px;
+            margin: 0;
+            text-align: center;
+            border-bottom: 2px solid #333;
+        }
+
+        /* ===== Layout utama ===== */
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        /* ===== Sidebar kiri ===== */
+        #model-list {
+            width: 300px;
+            padding: 20px;
+            border-right: 2px solid #333;
+            background: #020617;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+        }
+
+        button:hover {
+            background: #63b3ff;
+        }
+
+        /* ===== Area gambar ===== */
+        .image-area {
+            flex: 1;
+            display: grid;
+            justify-content: center;
+            gap: 8px;
+            padding: 20px;
+            align-items: center;
+        }
+
+        /* Gambar sedikit ke kiri */
+        #result-image {
+            max-width: 100%;
+            max-height: 75vh;
+            border: 2px solid #444;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        /* Panel keterangan kanan */
+        .info-panel {
+            height: 69vh;
+            width: 320px;
+            flex-shrink: 0;
+            transform: none;
+            background: #020617;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            color: #e5e7eb;
+            overflow-y: auto;
+        }
+
+        img {
+            max-width: 90%;
+            max-height: 80vh;
+            border: 2px solid #444;
+            object-fit: contain;
+        }
+
+        .image-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spacer {
+            width: 100%;
+        }
+
+        .center-group {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* jarak gambar & info */
+        }
+
+
+    </style>
+</head>
+<body>
+
+<h2>Model Object Detection</h2>
+
+<div class="container">
+    <!-- Sidebar -->
+    <div id="model-list">
+        <div id="selected-model">Belum ada model dipilh</div>
+    </div>
+
+    <!-- Area gambar -->
+    <div class="image-area">
+        <div class="center-group">
+            <img id="result-image" style="display:none;">
+
+        <div class="info-panel" id="info-panel">
+            <h3>Model Info</h3>
+            <p>Silakan pilih model untuk melihat hasil</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const models = [
+    {
+        name: "YOLOv8 Tiny (v8n)",
+        file: "yolo_tiny_v8n.jpg",
+        desc: [
+            "Model paling ringan dan cepat",
+            "Cocok untuk device terbatas",
+            "Akurasi paling rendah",
+            "Tidak ada orang yang terdeteksi"
+        ]
+    },
+    {
+        name: "YOLOv8 Small (v8s)",
+        file: "yolo_small_v8s.jpg",
+        desc: [
+            "Kompromi kecepatan dan akurasi",
+            "Lebih stabil dari v8n",
+            "Masih relatif ringan",
+            "Terdeteksi hanya satu orang"
+        ]
+    },
+    {
+        name: "YOLOv8 Medium (v8n)",
+        file: "yolo_medium_v8m.jpg",
+        desc: [
+            "Dapat mendeteksi orang lebih banyak",
+            "Lebih lambat dalam runtime",
+            "Akurasi paling tinggi diantara Yolo",
+            "Jumlah orang terdeteksi 2 (lebih banyak)"
+        ]
+    },    
+    {
+        name: "Faster R-CNN",
+        file: "faster_rcnn_IMG_20241211_150622.jpg",
+        desc: [
+            "Gambar yang bersih tak ada objek lain (pada label)",
+            "Lebih lambat dalam runtime",
+            "Akurasi sangat tinggi",
+            "Terdeteksi dua orang"
+        ]
+    },
+    {
+        name: "Fast CNN",
+        file: "fast_cnn_IMG_20241211_150622.jpg", // pastikan file ada di folder outputs
+        desc: [
+            "Model CNN ringan dan cepat",
+            "Model ini adalah untuk klasifikasi saja ",
+            "Hanya menebak visual yang mirip dengan kelas yang ada di ImageNet"
+        ]
+    }];
+
+
+    const list = document.getElementById("model-list");
+    const img = document.getElementById("result-image");
+    const selected = document.getElementById("selected-model");
+    const info = document.getElementById("info-panel");
+
+    models.forEach(model => {
+        const btn = document.createElement("button");
+        btn.textContent = model.name;
+
+        btn.onclick = () => {
+            selected.textContent = model.name;
+            img.src = "outputs/" + model.file;
+            img.style.display = "block";
+
+            info.innerHTML = `
+                <h3>${model.name}</h3>
+                <ul>
+                    ${model.desc.map(d => `<li>${d}</li>`).join("")}
+                </ul>
+            `;
+        };
+
+        list.insertBefore(btn, selected);
+    });
+</script>
+
+</body>
+</html>
